@@ -38,6 +38,6 @@ loop() ->
       CallerId ! analyze(Value),
       loop();
     shutdown ->
-      io:format("Shutting down..."),
+      %%io:format("Shutting down...~n", []),
       ok
   end.

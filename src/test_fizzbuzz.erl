@@ -14,8 +14,13 @@
 %% API
 -export([]).
 
-analyze_test_() ->
-  [?_assertEqual(1, fizzbuzz:analyze(1)),
-   ?_assertEqual(fizz, fizzbuzz:analyze(3)),
-   ?_assertEqual(buzz, fizzbuzz:analyze(5)),
-   ?_assertEqual(fizzbuzz, fizzbuzz:analyze(15))].
+server_test_() ->
+  {setup, fun() -> fizzbuzz:start() end,
+    fun(Pid) -> fizzbuzz:shutdown(Pid) end,
+    fun generate_analyze_tests/1}.
+
+generate_analyze_tests(Pid) ->
+  [?_assertEqual(1, fizzbuzz:calculate(Pid, 1)),
+   ?_assertEqual(fizz, fizzbuzz:calculate(Pid, 3)),
+   ?_assertEqual(buzz, fizzbuzz:calculate(Pid, 5)),
+   ?_assertEqual(fizzbuzz, fizzbuzz:calculate(Pid, 15))].
