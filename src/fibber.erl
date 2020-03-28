@@ -10,12 +10,25 @@
 -author("mthulisi").
 
 %% API
--export([loop/0]).
+-export([loop/0, start/0, stop/1, calculate/2]).
+
+start() ->
+  spawn(fun() -> loop() end).
+
+stop(Pid) ->
+  Pid ! shutdown.
+
+calculate(Pid, Number) ->
+  Pid ! {fib, self(), Number},
+  receive
+    {ok, Value} -> Value
+    after 5000 -> {error, timeot}
+  end.
 
 loop() ->
   receive
     {fib, CallerPid, Value} ->
-      CallerPid ! fib(Value),
+      CallerPid ! {ok, fib(Value)},
       loop();
     shutdown ->
       ok
